@@ -70,6 +70,13 @@ class DistanceView(APIView):
         serializer = PointSerializer(ubicaciones_cercanas, many=True)
         return Response(serializer.data)
     
+class CategoryView(APIView):
+    def get(self, request):
+        category = str(request.query_params.get('category', ''))
+        lista = Point.objects.filter(categoria=category)
+        serializer = PointSerializer(lista, many=True)
+        return Response(serializer.data)
+    
 class Main(View):
     def get(self, request, *args, **kwargs):
-        return HttpResponse("Hello, World!")
+        return render(request, 'index.html')

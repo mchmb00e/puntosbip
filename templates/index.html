@@ -1,0 +1,217 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puntos de carga | Bip!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        @media (max-width: 767px) {
+            /*
+            #control-panel {
+                width: 100%;
+                height: 30%;
+            }
+
+            #container-map {
+                width: 100%;
+                height: 70%;
+            }
+
+            #card h3 {
+                font-size: 18px;
+            }
+            #card p, #card li {
+                font-size: 14px;
+            }
+            #categories {
+                margin-top: 0px;
+                right: 0px;
+                top: 10px !important;
+            }
+            #categories label, .fs-5 {
+                font-size: 14px !important;
+            }
+            
+            <div id="categories" class="btn-group bg-white" role="group" aria-label="Basic radio toggle button group"
+        style="position: fixed; top: 10%; margin-top: 20px; right: 20px; z-index: 40;">
+        <input type="radio" class="btn-check categories" name="btnradio" id="todos" autocomplete="off" checked
+            value="Metro">
+        <label class="btn btn-outline-primary fs-5" for="todos" onclick="API.category('todos')"><i
+                class="bi bi-map-fill"></i> Mapa</label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="metro" autocomplete="off" value="Metro">
+        <label class="btn btn-outline-primary fs-5" for="metro" onclick="API.category('Metro')"><i
+                class="bi bi-train-front-fill"></i> Metro</label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="centro-bip" autocomplete="off"
+            value="Centro Bip!">
+        <label class="btn btn-outline-primary fs-5" for="centro-bip" onclick="API.category('Centro Bip!')"><i
+                class="bi bi-credit-card-2-front-fill"></i> Centro <b>Bip!</b></label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="centro-bip-full" autocomplete="off"
+            value="Centro Bip! Full">
+        <label class="btn btn-outline-primary fs-5" for="centro-bip-full" onclick="API.category('Centro Bip! Full')"><i
+                class="bi bi-person-vcard-fill"></i> Centro <b>Bip!</b> Full</label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="punto-bip" autocomplete="off"
+            value="Punto Bip!">
+        <label class="btn btn-outline-primary fs-5" for="punto-bip" onclick="API.category('Punto Bip!')"><i
+                class="bi bi-shop"></i> Punto <b>Bip!</b></label>
+    </div>
+
+
+            <div id="card" class="z-2 card position-fixed end-0 bottom-0 m-4 shadow-lg opacity-0 p-2" style="width: 22rem;">
+        <div class="card-body">
+          <h3 class="card-title" id="card-nombre">  </h3>
+          <p class="card-text d-flex gap-2"><i class="bi bi-geo-alt-fill"></i><span id="card-direccion"></span></p>
+          <p class="card-text d-flex gap-2"><i class="bi bi-clock-fill"></i></i><span id="card-horario"></span></p>
+        </div>
+        <ul class="list-group list-group-flush" id="card-funciones">
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link">¿Este lugar no ofrece servicios <b>Bip!</b>?</a>
+        </div>
+    </div>
+            */
+
+            .fs-7, #card-funciones li {
+                font-size: 12px;
+            }
+        }
+        @media (min-width: 768px) {
+            #menu {
+                height: 100% !important;
+            }
+            #card {
+                width: 22rem !important;
+            }
+            .fs-7, #card-funciones li {
+                font-size: 16px;
+            }
+            #card-nombre {
+                font-size: 22px !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5409193802358747"
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div class="btn-group-vertical bg-white border border-primary rounded" role="group" aria-label="Basic radio toggle button group"
+        style="position: fixed; top: 10%; margin-top: 20px; right: 20px; z-index: 40;">
+        <input type="radio" class="btn-check categories" name="btnradio" id="todos" autocomplete="off" checked
+            value="Metro">
+        <label class="btn btn-outline-primary fs-5" for="todos" onclick="API.category('todos')"><i
+                class="bi bi-map-fill"></i> <span class="d-none d-md-block">Mapa</span></label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="metro" autocomplete="off" value="Metro">
+        <label class="btn btn-outline-primary fs-5" for="metro" onclick="API.category('Metro')"><i
+                class="bi bi-train-front-fill"></i> <span class="d-none d-md-block">Metro</span></label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="centro-bip" autocomplete="off"
+            value="Centro Bip!">
+        <label class="btn btn-outline-primary fs-5" for="centro-bip" onclick="API.category('Centro Bip!')"><i
+                class="bi bi-credit-card-2-front-fill"></i> <span class="d-none d-md-block">Centro <b>Bip!</b></span></label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="centro-bip-full" autocomplete="off"
+            value="Centro Bip! Full">
+        <label class="btn btn-outline-primary fs-5" for="centro-bip-full" onclick="API.category('Centro Bip! Full')"><i
+                class="bi bi-person-vcard-fill"></i> <span class="d-none d-md-block">Centro <b>Bip!</b> Full</span></label>
+
+        <input type="radio" class="btn-check categories" name="btnradio" id="punto-bip" autocomplete="off"
+            value="Punto Bip!">
+        <label class="btn btn-outline-primary fs-5" for="punto-bip" onclick="API.category('Punto Bip!')"><i
+                class="bi bi-shop"></i> <span class="d-none d-md-block">Punto <b>Bip!</b></span></label>
+    </div>
+    <div id="card" class="z-2 card position-fixed bottom-0 end-0 m-4 shadow-lg opacity-0 p-2" style="width: 90%;">
+        <div class="card-body">
+            <h3 class="card-title fs-6" id="card-nombre"></h3>
+            <p class="card-text d-flex gap-2 fs-7"><i class="bi bi-geo-alt-fill"></i><span id="card-direccion"></span></p>
+            <p class="card-text d-flex gap-2 fs-7"><i class="bi bi-clock-fill"></i></i><span id="card-horario"></span></p>
+        </div>
+        <ul class="list-group list-group-flush" id="card-funciones">
+        </ul>
+        <button class="btn btn-outline-primary" onclick="closeCard()">
+            Cerrar
+        </button>
+    </div>
+
+    <div id="screen" class="position-fixed top-0 bottom-0 start-0 end-0 d-flex flex-column flex-md-row-reverse">
+
+
+        <div class="d-flex flex-column h-100 col-md-9">
+            <div id="ads-banner" class="w-100 bg-secondary">
+                <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;" data-ad-client="ca-pub-5409193802358747" data-ad-slot="6629696680"></ins>
+            </div>
+            <div id="map" class="w-100" style="height: 100%;"></div>
+        </div>
+        <div id="menu" class="p-2 overflow-y-scroll" style="height: 300px;">
+            <div class="d-flex flex-row justify-content-center align-items-center">
+                <img src="{% static 'img/logo1.webp' %}" alt="Logo" class="d-none d-md-block w-50">
+            </div>
+            <div>
+                <h1 class="text-md-center text-primary mb-3">Puntos <b>Bip!</b></h1>
+                <div class="d-flex flex-column">
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Dirección" aria-label="Dirección..." aria-describedby="basic-addon1" id="address">
+                    </div>
+                    <label for="my-address" class="d-flex flex-row justify-content-start align-items-center gap-1 ms-1">
+                        <input type="checkbox" id="my-address">
+                        <p class="m-0">Quiero buscar cerca de mi ubicación.</p>
+                    </label>
+                </div>
+                <div class="form-floating mt-3">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option value="100">100 metros</option>
+                        <option value="200">200 metros</option>
+                        <option value="500">500 metros</option>
+                        <option value="1000">1 kilómetro</option>
+                        <option value="2000">2 kilómetros</option>
+                        <option value="3000">3 kilómetros</option>
+                        <option value="5000">5 kilómetros</option>
+                    </select>
+                    <label for="floatingSelect">Rango de búsqueda</label>
+                </div>
+                <button type="button" class="btn btn-primary btn w-100 mt-2" id="search">Buscar puntos cercanos</button>
+                <div class="mt-3">
+                    <select class="form-select mt-2" aria-label="Default select example" id="comunas">
+                        <option selected>Seleccionar comuna</option>
+                    </select>
+                    <button type="button" id="button-comunas" class="btn btn-primary btn w-100 mt-2" disabled>Buscar por comuna</button>
+                </div>
+                <ins class="adsbygoogle" style="display:block;" data-ad-client="ca-pub-5409193802358747"
+                    data-ad-slot="1187450703" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    
+-->
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <script src="{% static 'js/map.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
